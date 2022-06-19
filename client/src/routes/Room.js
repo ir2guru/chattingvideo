@@ -43,14 +43,13 @@ const Room = (props) => {
 
     function createPeer(userID) {
         const peer = new RTCPeerConnection({
-            iceServers: [
-                {
-                    urls: "stun:stun.stunprotocol.org"
+            iceServers: [{
+                    urls: "stun:stun.netsend.pw:19302"
                 },
                 {
-                    urls: 'turn:numb.viagenie.ca',
-                    credential: 'muazkh',
-                    username: 'webrtc@live.com'
+                    urls: 'turn:turn.netsend.pw',
+                    credential: 'Ejikerichard234@',
+                    username: 'ejikerichard'
                 },
             ]
         });
@@ -130,12 +129,21 @@ const Room = (props) => {
         })
     }
 
-    return (
-        <div>
-            <video controls style={{height: 500, width: 500}} autoPlay ref={userVideo} />
-            <video controls style={{height: 500, width: 500}} autoPlay ref={partnerVideo} />
-            <button onClick={shareScreen}>Share screen</button>
-        </div>
+    return ( <
+        div >
+        <
+        video controls style = {
+            { height: 500, width: 500 }
+        }
+        autoPlay ref = { userVideo }
+        /> <
+        video controls style = {
+            { height: 500, width: 500 }
+        }
+        autoPlay ref = { partnerVideo }
+        /> <
+        button onClick = { shareScreen } > Share screen < /button> < /
+        div >
     );
 };
 

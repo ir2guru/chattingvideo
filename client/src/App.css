@@ -12,6 +12,20 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+.time{
+  font-size: 20px;
+  color: antiquewhite;
+}
+
+.msg{
+  color: aliceblue;
+  font-size: 26px;
+  padding-left: 600px;
+}
+
+.note{
+  color: red;
+}
 
 .App-header {
   background-color: #282c34;
@@ -21,7 +35,30 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: black;
+}
+
+.buttons{
+  padding-right: 600px;
+}
+
+.btn{
+  width: 60px;
+  height: 60px;
+  margin-left: 20px;
+  padding-top: 10px;
+  padding: 5px;
+  border-radius: 25px;
+  background-color:#282c34;
+  color: azure;
+  font-size: 25px;;
+}
+
+.bg{
+  background-color: #282c34;
+  padding-top: 100px;
+  height: 100vh;
+  width: 100%;
 }
 
 .App-link {

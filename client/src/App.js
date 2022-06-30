@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import CreateRoom from "./routes/CreateRoom";
 import Room from "./routes/Room";
+import Screen from './Screen';
+
 import './App.css';
 
 function App() {
@@ -11,6 +13,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={CreateRoom} />
           <Route path="/room/:roomID" component={Room} />
+          <Route path="/request/:Request" component={Screen} />
         </Switch>
       </BrowserRouter>
     </div>

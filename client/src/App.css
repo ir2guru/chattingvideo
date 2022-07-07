@@ -1,30 +1,53 @@
+*,
+*:before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #b366f9;
+  --secondary-color: #61dafb;
+  --room-bgcolor: #282c34;
+
+  --transition: 0.3s ease-in-out;
+}
+
 .App {
   text-align: center;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding-inline: 2rem;
+  background-color: var(--room-bgcolor);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.timer-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-block-end: 1.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-.time{
+.time {
   font-size: 20px;
   color: antiquewhite;
 }
 
-.msg{
+.msg {
   color: aliceblue;
+  background-color: var(--primary-color);
+  width: fit-content;
   font-size: 26px;
-  padding-left: 600px;
+  margin: auto;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
 }
 
-.note{
-  color: red;
+.note {
+  color: tomato;
+  color: ca;
 }
 
 .App-header {
@@ -38,31 +61,44 @@
   color: black;
 }
 
-.buttons{
-  padding-right: 600px;
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-block-end: 1.5rem;
 }
 
-.btn{
+.btn {
   width: 60px;
   height: 60px;
-  margin-left: 20px;
-  padding-top: 10px;
-  padding: 5px;
-  border-radius: 25px;
-  background-color:#282c34;
+  border-radius: 50%;
+  background-color: var(--room-bgcolor);
   color: azure;
-  font-size: 25px;;
+  font-size: 25px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  transition: all var(--transition);
 }
 
-.bg{
-  background-color: #282c34;
-  padding-top: 100px;
-  height: 100vh;
+.btn:hover {
+  transform: scale(1.02);
+}
+
+.share-screen {
+  background-color: black;
+}
+
+.bg {
+  background-color: var(--room-bgcolor);
+  padding-top: 2rem;
+  min-height: 100vh;
   width: 100%;
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--primary-color);
 }
 
 @keyframes App-logo-spin {
@@ -72,4 +108,45 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.video-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rem;
+  margin-block: 2rem;
+}
+
+@media screen and (min-width: 668px) {
+  .video-wrapper {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+button {
+  border: none;
+  outline: none;
+}
+
+.create-room-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.7rem 2rem;
+  font-size: 2rem;
+  border-radius: 0.5rem;
+  transition: background-color var(--transition);
+}
+
+.create-room-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+video {
+  aspect-ratio: 16/9 !important;
+  width: 100% !important;
+  object-fit: cover;
+  border: 2px solid var(--primary-color);
+  border-radius: 2rem;
 }

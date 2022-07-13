@@ -12,7 +12,7 @@ const Screen = (props) => {
     useEffect(() => {
 
       // fetch('https://oaoimmigration.com/vauth/getroom.php?passcode=wn7k1iDyfZo')
-      //   .then(response => response.json())
+      //   .then(responm,n,nse => response.json())
       //   .then(data => setSearchResponse(data));
       //   console.log("rOOM :", searchResponse);
         

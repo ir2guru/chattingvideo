@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, PureComponent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faL, faMicrophone, faPhone } from "@fortawesome/free-solid-svg-icons";
+import { faL, faMicrophone, faPhone, faYenSign } from "@fortawesome/free-solid-svg-icons";
 import { faVideoCamera } from "@fortawesome/free-solid-svg-icons";
 import { faDesktop } from "@fortawesome/free-solid-svg-icons";
 import io from "socket.io-client";
@@ -33,11 +33,17 @@ const Room = (props) => {
     }
 
     navigator.mediaDevices
-      .getUserMedia({ audio: true, video: true })
+      .getUserMedia({ audio: {
+        echoCancellation : true,
+        enabled : true,
+        volume : 1,
+      }, 
+         video: true })
       .then((stream) => {
         userVideo.current.srcObject = stream;
         userStream.current = stream;
-        MuteAudioStart();
+        //MuteAudioStart();
+        EnableVideo();
 
         socketRef.current = io.connect("/");
         socketRef.current.emit("join room", props.match.params.roomID);
@@ -90,13 +96,17 @@ const Room = (props) => {
     const peer = new RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.netsend.pw:19302",
+          urls: "stun:stun.netsend.pw:80",
         },
         {
-          urls: "turn:turn.netsend.pw",
-          credential: "Ejikerichard234@",
-          username: "ejikerichard",
-        },
+          urls: "turn:164.92.137.234:3478",
+          credential: "somepassword",
+          username: "guest",
+        }, {
+          urls: "turn:164.92.137.234:3478",
+          credential: "somepassword",
+          username: "guest",
+} ,
       ],
     });
 
@@ -226,7 +236,7 @@ const Room = (props) => {
     videotrackss.enabled = camstate;
     userStream.current.getTracks().forEach((t) => t.stop());
     peerRef.current.close();
-    window.location.href = "https://google.com/contact";
+    window.location.href = "http://netsend.pw/callend.html";
   }
   const EnableVideo = () => {
     csetState(!camstate);
@@ -241,7 +251,7 @@ const Room = (props) => {
     <div className="bg">
       <p className="msg">{RoomStatus}</p>
       <div className="video-wrapper">
-        <video style={{ height: 500, width: 500 }} autoPlay ref={userVideo} />
+        <video style={{ height: 500, width: 500 }} autoPlay ref={userVideo} muted={true} />
         <video
           style={{ height: 500, width: 500 }}
           autoPlay
@@ -249,13 +259,6 @@ const Room = (props) => {
         />
       </div>
       <div className="buttons">
-        <button
-          className="btn end-call"
-          style={{ backgroundColor: "tomato" }}
-          onClick={EndMyCall}
-        >
-          <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
-        </button>
         <button
           className="btn mute-call"
           style={{ backgroundColor: state ? "tomato" : "cadetblue" }}
@@ -272,6 +275,13 @@ const Room = (props) => {
         </button>
         <button className="btn share-screen" onClick={shareScreen}>
           <FontAwesomeIcon icon={faDesktop}></FontAwesomeIcon>
+        </button>
+        <button
+          className="btn end-call"
+          style={{ backgroundColor: "tomato", marginLeft : 30}}
+          onClick={EndMyCall}
+        >
+          <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
         </button>
       </div>
       <div className="timer-wrapper">

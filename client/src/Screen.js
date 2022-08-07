@@ -16,7 +16,7 @@ const Screen = (props) => {
       //   .then(data => setSearchResponse(data));
       //   console.log("rOOM :", searchResponse);
         
-        fetch(`https://netsend.pw/getroom.php?passcode=${props.match.params.Request}`)
+        fetch(`https://voicecontrol.netsend.pw/getroom.php?passcode=${props.match.params.Request}`)
         .then((r) => r.text())
         .then(text  => {
             myName = text;

@@ -16,10 +16,12 @@ const Room = (props) => {
   const userStream = useRef();
   const screenTrack = useRef();
   const senders = useRef([]);
+  const cams = useRef([]);
   const [state, setState] = useState(false);
   const [camstate, csetState] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMCounter] = useState(0);
+  const [camarray, setCamArray] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -31,41 +33,99 @@ const Room = (props) => {
     if (seconds > 10) {
       console.log("GGG :", "jjj");
     }
+    CheckCamera();
 
-    navigator.mediaDevices
-      .getUserMedia({ audio: {
-        echoCancellation : true,
-        enabled : true,
-        volume : 1,
-      }, 
-         video: true })
-      .then((stream) => {
-        userVideo.current.srcObject = stream;
-        userStream.current = stream;
-        //MuteAudioStart();
-        EnableVideo();
+    async function getConnectedDevices(type) {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const actually = devices.filter(device => device.kind === type);
+      setCamArray((camarray) => camarray + actually.length);
+      console.log('Thing Happen :', actually.length);
+      return devices.filter(device => device.kind === type);
+  
+    }
+  
+    async function CheckCamera(){
+      const cameras = await getConnectedDevices('videoinput');
+      //console.log('New cOUNT :', camarray);
+      if (cameras.length > 0) {
+           console.log('New cOUNT :', cameras.length);
+           navigator.mediaDevices
+           .getUserMedia({ audio: {
+             echoCancellation : true,
+             enabled : true,
+             volume : 1,
+           }, 
+              video: true })
+           .then((stream) => {
+             userVideo.current.srcObject = stream;
+             userStream.current = stream;
+             //MuteAudioStart();
+             EnableVideo();
 
-        socketRef.current = io.connect("/");
-        socketRef.current.emit("join room", props.match.params.roomID);
-
-        socketRef.current.on("other user", (userID) => {
-          callUser(userID);
-          inichiator = true;
-          RoomStatus = "Guest Yet To Join";
-          otherUser.current = userID;
+     
+             socketRef.current = io.connect("/");
+             socketRef.current.emit("join room", props.match.params.roomID);
+     
+             socketRef.current.on("other user", (userID) => {
+               callUser(userID);
+               inichiator = true;
+               RoomStatus = "Guest Yet To Join";
+               otherUser.current = userID;
+             });
+     
+             socketRef.current.on("user joined", (userID) => {
+               RoomStatus = "Guest Joined";
+               otherUser.current = userID;
+             });
+     
+             socketRef.current.on("offer", handleRecieveCall);
+     
+             socketRef.current.on("answer", handleAnswer);
+     
+             socketRef.current.on("ice-candidate", handleNewICECandidateMsg);
+           });
+     
+        // Open first available video camera with a resolution of 1280x720 pixels
+        //const stream = openCamera(cameras[0].deviceId, 1280, 720);
+      }else{
+        navigator.mediaDevices
+        .getUserMedia({ audio: {
+          echoCancellation : true,
+          enabled : true,
+          volume : 1,
+        }, 
+           video: false })
+        .then((stream) => {
+          userVideo.current.srcObject = stream;
+          userStream.current = stream;
+          //MuteAudioStart();
+          //EnableVideo();
+         // CheckCamera();
+  
+          socketRef.current = io.connect("/");
+          socketRef.current.emit("join room", props.match.params.roomID);
+  
+          socketRef.current.on("other user", (userID) => {
+            callUser(userID);
+            inichiator = true;
+            RoomStatus = "Guest Yet To Join";
+            otherUser.current = userID;
+          });
+  
+          socketRef.current.on("user joined", (userID) => {
+            RoomStatus = "Guest Joined";
+            otherUser.current = userID;
+          });
+  
+          socketRef.current.on("offer", handleRecieveCall);
+  
+          socketRef.current.on("answer", handleAnswer);
+  
+          socketRef.current.on("ice-candidate", handleNewICECandidateMsg);
         });
-
-        socketRef.current.on("user joined", (userID) => {
-          RoomStatus = "Guest Joined";
-          otherUser.current = userID;
-        });
-
-        socketRef.current.on("offer", handleRecieveCall);
-
-        socketRef.current.on("answer", handleAnswer);
-
-        socketRef.current.on("ice-candidate", handleNewICECandidateMsg);
-      });
+  
+      }
+    }
 
     return () => clearInterval(interval);
   }, []);
@@ -79,6 +139,9 @@ const Room = (props) => {
   } else {
     EndMyCall();
   }
+
+
+
 
   function callUser(userID) {
     peerRef.current = createPeer(userID);
@@ -236,7 +299,8 @@ const Room = (props) => {
     videotrackss.enabled = camstate;
     userStream.current.getTracks().forEach((t) => t.stop());
     peerRef.current.close();
-    window.location.href = "http://netsend.pw/callend.html";
+    console.log("RoomID :", props.match.params.roomID);
+    window.location.href = "https://voicecontrol.netsend.pw/callend.php?filename="+props.match.params.roomID;
   }
   const EnableVideo = () => {
     csetState(!camstate);

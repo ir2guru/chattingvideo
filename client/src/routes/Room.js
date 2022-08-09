@@ -23,6 +23,11 @@ const Room = (props) => {
   const [minutes, setMCounter] = useState(0);
   const [camarray, setCamArray] = useState(0);
 
+  //const style1 = {backgroundColor: 'salmon'};
+  const style2 = { backgroundColor: camstate ? "tomato" : "cadetblue" };
+
+  //const style1 = {camarray > 0 ? { display: "none" } : { display: "block" }};
+
   useEffect(() => {
     const interval = setInterval(() => {
       setSeconds((seconds) => seconds + 1);
@@ -33,22 +38,22 @@ const Room = (props) => {
     if (seconds > 10) {
       console.log("GGG :", "jjj");
     }
-    CheckCamera();
+    
 
-    async function getConnectedDevices(type) {
+    const getConnectedDevices = async (type) => {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const actually = devices.filter(device => device.kind === type);
-      setCamArray((camarray) => camarray + actually.length);
       console.log('Thing Happen :', actually.length);
       return devices.filter(device => device.kind === type);
   
     }
   
-    async function CheckCamera(){
+    const CheckCamera = async() =>{
       const cameras = await getConnectedDevices('videoinput');
-      //console.log('New cOUNT :', camarray);
+      setCamArray((camarray) => camarray + cameras.length);
+      console.log('New cOUNT :', cameras);
       if (cameras.length > 0) {
-           console.log('New cOUNT :', cameras.length);
+           console.log('New cOUNT :', cameras);
            navigator.mediaDevices
            .getUserMedia({ audio: {
              echoCancellation : true,
@@ -88,6 +93,7 @@ const Room = (props) => {
         // Open first available video camera with a resolution of 1280x720 pixels
         //const stream = openCamera(cameras[0].deviceId, 1280, 720);
       }else{
+        console.log('New cOUNT :', cameras);
         navigator.mediaDevices
         .getUserMedia({ audio: {
           echoCancellation : true,
@@ -126,7 +132,7 @@ const Room = (props) => {
   
       }
     }
-
+    CheckCamera();
     return () => clearInterval(interval);
   }, []);
 
@@ -332,12 +338,14 @@ const Room = (props) => {
         </button>
         <button
           className="btn end-call"
-          style={{ backgroundColor: camstate ? "tomato" : "cadetblue" }}
+          style={camarray > 0 ? { display: "block" } : { display: "none" }}
           onClick={EnableVideo}
         >
           <FontAwesomeIcon icon={faVideoCamera}></FontAwesomeIcon>
         </button>
-        <button className="btn share-screen" onClick={shareScreen}>
+        <button 
+        className="btn share-screen" 
+        onClick={shareScreen}>
           <FontAwesomeIcon icon={faDesktop}></FontAwesomeIcon>
         </button>
         <button
@@ -356,6 +364,6 @@ const Room = (props) => {
       </div>
     </div>
   );
-};
+  };
 
 export default Room;

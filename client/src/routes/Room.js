@@ -51,7 +51,7 @@ const Room = (props) => {
     const CheckCamera = async() =>{
       const cameras = await getConnectedDevices('videoinput');
       setCamArray((camarray) => camarray + cameras.length);
-      console.log('New cOUNT :', cameras);
+      //console.log('New cOUNT :', cameras);
       if (cameras.length > 0) {
            console.log('New cOUNT :', cameras);
            navigator.mediaDevices
@@ -93,7 +93,7 @@ const Room = (props) => {
         // Open first available video camera with a resolution of 1280x720 pixels
         //const stream = openCamera(cameras[0].deviceId, 1280, 720);
       }else{
-        console.log('New cOUNT :', cameras);
+        console.log('No Cam Stats :', cameras);
         navigator.mediaDevices
         .getUserMedia({ audio: {
           echoCancellation : true,

@@ -21,11 +21,6 @@ io.on("connection", socket => {
         }
     });
 
-    socket.on('disconnect', ()=> {
-        socket.broadcast.emit("User Left");
-        delete rooms[socket.id];
-    } );
-
     socket.on("offer", payload => {
         io.to(payload.target).emit("offer", payload);
     });

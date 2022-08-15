@@ -21,11 +21,6 @@ io.on("connection", socket => {
         }
     });
 
-    socket.on('disconnect', ()=> {
-        socket.broadcast.emit("User Left");
-        delete rooms[socket.id];
-    } );
-
     socket.on("offer", payload => {
         io.to(payload.target).emit("offer", payload);
     });
@@ -40,4 +35,4 @@ io.on("connection", socket => {
 });
 
 
-server.listen(api.netsend.pw, () => console.log('server is running on port 8000'));
+server.listen(8000, () => console.log('server is running on port 8000'));

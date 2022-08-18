@@ -34,5 +34,10 @@ io.on("connection", socket => {
     });
 });
 
+// socket.on('disconnect', ()=> {
+//     socket.broadcast.emit("User Left");
+//     delete rooms[socket.id];
+// } );
+
 
 server.listen(8000, () => console.log('server is running on port 8000'));

@@ -165,7 +165,7 @@ const Room = (props) => {
     const peer = new RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:stun.netsend.pw:80",
+          urls: "stun:164.92.137.234:80",
         },
         {
           urls: "turn:164.92.137.234:3478",
@@ -175,7 +175,7 @@ const Room = (props) => {
           urls: "turn:164.92.137.234:3478",
           credential: "somepassword",
           username: "guest",
-} ,
+        } ,
       ],
     });
 

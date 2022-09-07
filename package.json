@@ -8,9 +8,8 @@
     "express": "^4.17.1",
     "socket.io": "^2.3.0"
   },
-"scripts": {
-  "start": "PROD=true node server.js",
-  "postinstall": "cd ./client && yarn"
-}
-
+  "scripts": {
+    "start": "PROD=true node server.js",
+    "postinstall": "cd ./client && yarn"
+  }
 }

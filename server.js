@@ -1,8 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const http = require("http");
+const path = require("path");
 const app = express();
 const server = http.createServer(app);
 const socket = require("socket.io");
+const { default: App } = require("./client/src/App");
 const io = socket(server);
 
 const rooms = {};
@@ -39,5 +42,12 @@ io.on("connection", socket => {
 //     delete rooms[socket.id];
 // } );
 
+if(process.env.PROD){
+    app.use(express.static(path.join(__dirname, '.client/build')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, './client/build/index.html'));
+    });
+}
 
-server.listen(api.netsend.pw, () => console.log('server is running on port 8000'));
+const port = process.env.PORT || 8000;
+server.listen(port, () => console.log(`server is running on port ${port}`));

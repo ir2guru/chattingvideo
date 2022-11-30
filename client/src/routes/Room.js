@@ -1,6 +1,11 @@
 import React, { useRef, useEffect, useState, PureComponent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faL, faMicrophone, faPhone, faYenSign } from "@fortawesome/free-solid-svg-icons";
+import {
+  faL,
+  faMicrophone,
+  faPhone,
+  faYenSign,
+} from "@fortawesome/free-solid-svg-icons";
 import { faVideoCamera } from "@fortawesome/free-solid-svg-icons";
 import { faDesktop } from "@fortawesome/free-solid-svg-icons";
 import io from "socket.io-client";
@@ -38,100 +43,100 @@ const Room = (props) => {
     if (seconds > 10) {
       console.log("GGG :", "jjj");
     }
-    
 
     const getConnectedDevices = async (type) => {
       const devices = await navigator.mediaDevices.enumerateDevices();
-      const actually = devices.filter(device => device.kind === type);
-      console.log('Thing Happen :', actually.length);
-      return devices.filter(device => device.kind === type);
-  
-    }
-  
-    const CheckCamera = async() =>{
-      const cameras = await getConnectedDevices('videoinput');
+      const actually = devices.filter((device) => device.kind === type);
+      console.log("Thing Happen :", actually.length);
+      return devices.filter((device) => device.kind === type);
+    };
+
+    const CheckCamera = async () => {
+      const cameras = await getConnectedDevices("videoinput");
       setCamArray((camarray) => camarray + cameras.length);
       //console.log('New cOUNT :', cameras);
       if (cameras.length > 0) {
-           console.log('New cOUNT :', cameras);
-           navigator.mediaDevices
-           .getUserMedia({ audio: {
-             echoCancellation : true,
-             enabled : true,
-             volume : 1,
-           }, 
-              video: true })
-           .then((stream) => {
-             userVideo.current.srcObject = stream;
-             userStream.current = stream;
-             //MuteAudioStart();
-             EnableVideo();
+        console.log("New cOUNT :", cameras);
+        navigator.mediaDevices
+          .getUserMedia({
+            audio: {
+              echoCancellation: true,
+              enabled: true,
+              volume: 1,
+            },
+            video: true,
+          })
+          .then((stream) => {
+            userVideo.current.srcObject = stream;
+            userStream.current = stream;
+            //MuteAudioStart();
+            EnableVideo();
 
-     
-             socketRef.current = io.connect("/");
-             socketRef.current.emit("join room", props.match.params.roomID);
-     
-             socketRef.current.on("other user", (userID) => {
-               callUser(userID);
-               inichiator = true;
-               RoomStatus = "Guest Yet To Join";
-               otherUser.current = userID;
-             });
-     
-             socketRef.current.on("user joined", (userID) => {
-               RoomStatus = "Guest Joined";
-               otherUser.current = userID;
-             });
-     
-             socketRef.current.on("offer", handleRecieveCall);
-     
-             socketRef.current.on("answer", handleAnswer);
-     
-             socketRef.current.on("ice-candidate", handleNewICECandidateMsg);
-           });
-     
+            socketRef.current = io.connect("/");
+            socketRef.current.emit("join room", props.match.params.roomID);
+
+            socketRef.current.on("other user", (userID) => {
+              callUser(userID);
+              inichiator = true;
+              RoomStatus = "Guest Yet To Join";
+              otherUser.current = userID;
+            });
+
+            socketRef.current.on("user joined", (userID) => {
+              RoomStatus = "Guest Joined";
+              otherUser.current = userID;
+            });
+
+            socketRef.current.on("offer", handleRecieveCall);
+
+            socketRef.current.on("answer", handleAnswer);
+
+            socketRef.current.on("ice-candidate", handleNewICECandidateMsg);
+          });
+
         // Open first available video camera with a resolution of 1280x720 pixels
         //const stream = openCamera(cameras[0].deviceId, 1280, 720);
-      }else{
-        console.log('No Cam Stats :', cameras);
+      } else {
+        console.log("No Cam Stats :", cameras);
         navigator.mediaDevices
-        .getUserMedia({ audio: {
-          echoCancellation : true,
-          enabled : true,
-          volume : 1,
-        }, 
-           video: false })
-        .then((stream) => {
-          userVideo.current.srcObject = stream;
-          userStream.current = stream;
-          //MuteAudioStart();
-          //EnableVideo();
-         // CheckCamera();
-  
-          socketRef.current = io.connect("/");
-          socketRef.current.emit("join room", props.match.params.roomID);
-  
-          socketRef.current.on("other user", (userID) => {
-            callUser(userID);
-            inichiator = true;
-            RoomStatus = "Guest Yet To Join";
-            otherUser.current = userID;
+          .getUserMedia({
+            audio: {
+              echoCancellation: true,
+              enabled: true,
+              volume: 1,
+            },
+            video: false,
+          })
+          .then((stream) => {
+            userVideo.current.srcObject = stream;
+            userStream.current = stream;
+            //MuteAudioStart();
+            //EnableVideo();
+            // CheckCamera();
+
+            socketRef.current = io.connect("/");
+            socketRef.current.emit("join room", props.match.params.roomID);
+
+            socketRef.current.on("other user", (userID) => {
+              callUser(userID);
+              inichiator = true;
+              RoomStatus = "Guest Yet To Join";
+              otherUser.current = userID;
+            });
+
+            socketRef.current.on("user joined", (userID) => {
+              RoomStatus = "Guest Joined";
+              otherUser.current = userID;
+            });
+
+            socketRef.current.on("offer", handleRecieveCall);
+
+            socketRef.current.on("answer", handleAnswer);
+
+            socketRef.current.on("ice-candidate", handleNewICECandidateMsg);
           });
-  
-          socketRef.current.on("user joined", (userID) => {
-            RoomStatus = "Guest Joined";
-            otherUser.current = userID;
-          });
-  
-          socketRef.current.on("offer", handleRecieveCall);
-  
-          socketRef.current.on("answer", handleAnswer);
-  
-          socketRef.current.on("ice-candidate", handleNewICECandidateMsg);
-        });
-  
       }
-    }
+    };
     CheckCamera();
     return () => clearInterval(interval);
   }, []);
@@ -145,9 +150,6 @@ const Room = (props) => {
   } else {
     EndMyCall();
   }
-
-
-
 
   function callUser(userID) {
     peerRef.current = createPeer(userID);
@@ -165,17 +167,18 @@ const Room = (props) => {
     const peer = new RTCPeerConnection({
       iceServers: [
         {
-          urls: "stun:164.92.137.234:3478",
+          urls: "stun:stun.netsend.pw",
         },
         {
-          urls: "turn:164.92.137.234:3478",
+          urls: "turn:turn.netsend.pw",
           credential: "somepassword",
           username: "guest",
-        }, {
-          urls: "turn:164.92.137.234:3478",
+        },
+        {
+          urls: "turn:turn.netsend.pw",
           credential: "somepassword",
           username: "guest",
-        } ,
+        },
       ],
     });
 
@@ -306,7 +309,9 @@ const Room = (props) => {
     userStream.current.getTracks().forEach((t) => t.stop());
     peerRef.current.close();
     console.log("RoomID :", props.match.params.roomID);
-    window.location.href = "https://voicecontrol.netsend.pw/callend.php?filename="+props.match.params.roomID;
+    window.location.href =
+      "https://voicecontrol.netsend.pw/callend.php?filename=" +
+      props.match.params.roomID;
   }
   const EnableVideo = () => {
     csetState(!camstate);
@@ -319,51 +324,54 @@ const Room = (props) => {
 
   return (
     <div className="bg">
-      <p className="msg">{RoomStatus}</p>
+      <p className="msg"> {RoomStatus} </p>{" "}
       <div className="video-wrapper">
-        <video style={{ height: 500, width: 500 }} autoPlay ref={userVideo} muted={true} />
+        <video
+          style={{ height: 500, width: 500 }}
+          autoPlay
+          ref={userVideo}
+          muted={true}
+        />{" "}
         <video
           style={{ height: 500, width: 500 }}
           autoPlay
           ref={partnerVideo}
-        />
-      </div>
+        />{" "}
+      </div>{" "}
       <div className="buttons">
         <button
           className="btn mute-call"
           style={{ backgroundColor: state ? "tomato" : "cadetblue" }}
           onClick={MuteAudio}
         >
-          <FontAwesomeIcon icon={faMicrophone}></FontAwesomeIcon>
-        </button>
+          <FontAwesomeIcon icon={faMicrophone} />{" "}
+        </button>{" "}
         <button
           className="btn end-call"
           style={camarray > 0 ? { display: "block" } : { display: "none" }}
           onClick={EnableVideo}
         >
-          <FontAwesomeIcon icon={faVideoCamera}></FontAwesomeIcon>
-        </button>
-        <button 
-        className="btn share-screen" 
-        onClick={shareScreen}>
-          <FontAwesomeIcon icon={faDesktop}></FontAwesomeIcon>
-        </button>
+          <FontAwesomeIcon icon={faVideoCamera}> </FontAwesomeIcon>{" "}
+        </button>{" "}
+        <button className="btn share-screen" onClick={shareScreen}>
+          <FontAwesomeIcon icon={faDesktop}> </FontAwesomeIcon>{" "}
+        </button>{" "}
         <button
           className="btn end-call"
-          style={{ backgroundColor: "tomato", marginLeft : 30}}
+          style={{ backgroundColor: "tomato", marginLeft: 30 }}
           onClick={EndMyCall}
         >
-          <FontAwesomeIcon icon={faPhone}></FontAwesomeIcon>
-        </button>
-      </div>
+          <FontAwesomeIcon icon={faPhone}> </FontAwesomeIcon>{" "}
+        </button>{" "}
+      </div>{" "}
       <div className="timer-wrapper">
         <p className="time">
-          Call Duration: {minutes} : {seconds < 10 ? `0${seconds}` : seconds}
-        </p>
-        <p className="note">Please Note Call Ends in 30mins</p>
-      </div>
+          Call Duration: {minutes}: {seconds < 10 ? `0${seconds}` : seconds}{" "}
+        </p>{" "}
+        <p className="note"> Please Note Call Ends in 30 mins </p>{" "}
+      </div>{" "}
     </div>
   );
-  };
+};
 
 export default Room;
